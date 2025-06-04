@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Color Picker Tool</title>
+  <style>
+    body {
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #222, #eee);
+      font-family: 'Segoe UI', sans-serif;
+      transition: background 0.5s ease;
+    }
+
+    .container {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      padding: 30px 20px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+      text-align: center;
+      color: #fff;
+      width: 90%;
+      max-width: 360px;
+      animation: popIn 0.7s ease;
+    }
+
+    @keyframes popIn {
+      from {
+        transform: scale(0.8);
+        opacity: 0;
+      }
+      to {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+
+    h1 {
+      margin-bottom: 20px;
+      font-size: 24px;
+    }
+
+    input[type="color"] {
+      width: 100px;
+      height: 100px;
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      margin-bottom: 20px;
+      transition: transform 0.3s ease;
+    }
+
+    input[type="color"]:hover {
+      transform: scale(1.1);
+    }
+
+    .color-code {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 10px 0;
+    }
+
+    .code {
+      background: #000000cc;
+      padding: 10px 15px;
+      border-radius: 10px 0 0 10px;
+      font-size: 16px;
+      user-select: all;
+      flex: 1;
+    }
+
+    .copy-btn {
+      padding: 10px 15px;
+      border: none;
+      background: #00d1ff;
+      color: #000;
+      font-weight: bold;
+      border-radius: 0 10px 10px 0;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    .copy-btn:hover {
+      background: #00bbff;
+    }
+
+    @media (max-width: 400px) {
+      h1 {
+        font-size: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>Color Picker Tool</h1>
+    <input type="color" id="colorPicker" value="#ff0055" />
+    
+    <div class="color-code">
+      <div class="code" id="hexCode">#ff0055</div>
+      <button class="copy-btn" onclick="copyText('hex')">Copy</button>
+    </div>
+
+    <div class="color-code">
+      <div class="code" id="rgbCode">rgb(255, 0, 85)</div>
+      <button class="copy-btn" onclick="copyText('rgb')">Copy</button>
+    </div>
+  </div>
+
+  <script>
+    const picker = document.getElementById('colorPicker');
+    const hexCode = document.getElementById('hexCode');
+    const rgbCode = document.getElementById('rgbCode');
+
+    function hexToRgb(hex) {
+      const r = parseInt(hex.substr(1, 2), 16);
+      const g = parseInt(hex.substr(3, 2), 16);
+      const b = parseInt(hex.substr(5, 2), 16);
+      return `rgb(${r}, ${g}, ${b})`;
+    }
+
+    picker.addEventListener('input', () => {
+      const hex = picker.value;
+      const rgb = hexToRgb(hex);
+
+      hexCode.innerText = hex;
+      rgbCode.innerText = rgb;
+
+      document.body.style.background = `linear-gradient(135deg, ${hex}, #222)`;
+    });
+
+    function copyText(type) {
+      const text = type === 'hex' ? hexCode.innerText : rgbCode.innerText;
+      navigator.clipboard.writeText(text).then(() => {
+        alert(`${type.toUpperCase()} code copied: ${text}`);
+      });
+    }
+  </script>
+</body>
+</html>

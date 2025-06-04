@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PDF to ZIP Converter</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      background: linear-gradient(135deg, #1f1c2c, #928DAB);
+      color: #fff;
+      padding: 2rem;
+    }
+
+    h1 {
+      font-size: 2rem;
+      animation: fadeInDown 1s ease-in-out;
+    }
+
+    @keyframes fadeInDown {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    input[type="file"] {
+      margin: 1rem 0;
+      padding: 1rem;
+      background-color: #fff;
+      color: #000;
+      border-radius: 10px;
+      border: none;
+      width: 90%;
+      max-width: 400px;
+      font-size: 1rem;
+    }
+
+    button {
+      padding: 0.75rem 1.5rem;
+      font-size: 1rem;
+      background-color: #00cec9;
+      border: none;
+      border-radius: 8px;
+      color: white;
+      cursor: pointer;
+      transition: background 0.3s ease, transform 0.2s ease;
+    }
+
+    button:hover {
+      background-color: #3eff08;
+      transform: scale(1.05);
+    }
+
+    button:active {
+      transform: scale(0.95);
+      box-shadow: 0px 0px 5px #3eff08;
+    }
+
+    #status {
+      margin-top: 1rem;
+      font-size: 1.1rem;
+      animation: fadeInUp 0.8s ease-in-out;
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 600px) {
+      h1 { font-size: 1.5rem; }
+      button { width: 90%; }
+    }
+  </style>
+</head>
+<body>
+  <h1>📦 PDF to ZIP Converter</h1>
+  <input type="file" id="pdfFiles" accept="application/pdf" multiple />
+  <button onclick="convertToZip()">Compress to ZIP</button>
+  <div id="status"></div>
+
+  <script>
+    async function convertToZip() {
+      const input = document.getElementById('pdfFiles');
+      const status = document.getElementById('status');
+      if (!input.files.length) {
+        status.innerText = 'Please select PDF files first.';
+        return;
+      }
+
+      const zip = new JSZip();
+      status.innerText = 'Compressing PDFs into ZIP...';
+
+      for (let i = 0; i < input.files.length; i++) {
+        const file = input.files[i];
+        const content = await file.arrayBuffer();
+        zip.file(file.name, content);
+      }
+
+      const blob = await zip.generateAsync({ type: 'blob' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = 'pdfs.zip';
+      link.click();
+
+      status.innerText = 'ZIP file ready! Download should start automatically.';
+    }
+  </script>
+</body>
+</html>
